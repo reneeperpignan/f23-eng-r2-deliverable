@@ -401,5 +401,3 @@ Allows us to run `eslint` after `prettier` on save, which is the fastest order.
 ## Deployment guides
 
 Deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker). The easiest way to deploy is with Vercel, which was created by the creators of Next.js!
-
-ll
