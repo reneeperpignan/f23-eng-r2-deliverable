@@ -9,16 +9,53 @@ import { useState } from "react";
 import EditSpecies from "./edit-species-dialog";
 
 type Species = Database["public"]["Tables"]["species"]["Row"];
+type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface SpeciesDetailsDialogProps {
   species: Species;
+  profiles: Profiles;
   onClose: () => void;
   userId: string;
 }
 
-export default function SpeciesDetailsDialog({ species, onClose, userId }: SpeciesDetailsDialogProps) {
+export default function SpeciesDetailsDialog({ species, profiles, onClose, userId }: SpeciesDetailsDialogProps) {
   const router = useRouter();
   const isCurrentUser = userId === species.author;
+
+  // // State to store the author's email
+  // const [authorEmail, setAuthorEmail] = useState("");
+
+  // // Function to fetch and set the author's email
+  // const fetchAuthorEmail = async () => {
+  //   try {
+  //     const supabase = createClientComponentClient<Database>();
+
+  //     // Perform the join query
+  //     const { data: profiles, error } = await supabase.from("profiles").select(`
+  //     email,
+  //     species(
+  //       author
+  //     )`);
+
+  //     const { data: error } = await supabase.from("profiles").select("*");
+  //     console.log(data);
+
+  //     if (error) {
+  //       throw new Error(`Error fetching author's email1: ${error.message}`);
+  //     }
+
+  //     // Set the author's email
+  //     // setAuthorEmail(profiles?.email || "");
+  //   } catch (error) {
+  //     // Handle errors
+  //     console.error("Error fetching author's email2:", error);
+  //   }
+  // };
+
+  // // Fetch the author's email when the component mounts
+  // useEffect(() => {
+  //   fetchAuthorEmail();
+  // }, [species.id]); // Re-fetch when the species ID changes
 
   //DELETE a species
   const handleDelete = async () => {
@@ -77,6 +114,7 @@ export default function SpeciesDetailsDialog({ species, onClose, userId }: Speci
           <p>{species.description ? species.description : ""}</p>
           <p>Population: {species.total_population ? species.total_population : ""}</p>
           <p>ID: {species.id ? species.id : ""}</p>
+          <p>author: </p>
         </div>
         <div className="flex">
           <Button type="submit" className="ml-1 mr-1 flex-auto" onClick={handleEditClick} disabled={!isCurrentUser}>

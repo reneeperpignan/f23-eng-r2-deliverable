@@ -19,14 +19,16 @@ export default async function SpeciesList() {
 
   // Fetch species data from the database
   const { data: species } = await supabase.from("species").select("*");
+  const { data: profiles } = await supabase.from("profiles").select("*");
 
   return (
     <>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <TypographyH2>Species List</TypographyH2>
         <AddSpeciesDialog key={new Date().getTime()} userId={session.user.id} />
-        <SortSpecies species={species} userId={session.user.id} />
       </div>
+      <SortSpecies species={species} profiles={profiles} userId={session.user.id} />
+
       <Separator className="my-4" />
     </>
   );

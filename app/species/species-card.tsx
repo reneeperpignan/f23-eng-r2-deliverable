@@ -6,13 +6,15 @@ import { useState } from "react";
 import SpeciesDetailsDialog from "./species-details-dialog";
 
 type Species = Database["public"]["Tables"]["species"]["Row"];
+type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface SpeciesCardProps {
   species: Species;
+  profiles: Profiles;
   userId: string;
 }
 
-export default function SpeciesCard({ species, userId }: SpeciesCardProps) {
+export default function SpeciesCard({ species, profiles, userId }: SpeciesCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = () => {
@@ -53,7 +55,9 @@ export default function SpeciesCard({ species, userId }: SpeciesCardProps) {
       </div>
       {/* Dialog for displaying more details
       Only open the dialog when the dialog hook is open*/}
-      {isDialogOpen && <SpeciesDetailsDialog species={species} userId={userId} onClose={closeDialog} />}
+      {isDialogOpen && (
+        <SpeciesDetailsDialog species={species} profiles={profiles} userId={userId} onClose={closeDialog} />
+      )}
     </div>
   );
 }
