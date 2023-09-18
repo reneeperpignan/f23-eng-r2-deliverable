@@ -3,7 +3,7 @@ import { TypographyH2 } from "@/components/ui/typography";
 import { createServerSupabaseClient } from "@/lib/server-utils";
 import { redirect } from "next/navigation";
 import AddSpeciesDialog from "./add-species-dialog";
-import SpeciesCard from "./species-card";
+import SortSpecies from "./sorted-dropdown";
 
 export default async function SpeciesList() {
   // Create supabase server component client and obtain user session from stored cookie
@@ -17,6 +17,7 @@ export default async function SpeciesList() {
     redirect("/");
   }
 
+  // Fetch species data from the database
   const { data: species } = await supabase.from("species").select("*");
 
   return (
@@ -24,11 +25,9 @@ export default async function SpeciesList() {
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <TypographyH2>Species List</TypographyH2>
         <AddSpeciesDialog key={new Date().getTime()} userId={session.user.id} />
+        <SortSpecies species={species} userId={session.user.id} />
       </div>
       <Separator className="my-4" />
-      <div className="flex flex-wrap justify-center">
-        {species?.map((species) => <SpeciesCard key={species.id} {...species} />)}
-      </div>
     </>
   );
 }

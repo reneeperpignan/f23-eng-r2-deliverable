@@ -33,6 +33,8 @@ export interface Database {
       };
       species: {
         Row: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          sort(arg0: (a: any, b: any) => any): any[];
           author: string;
           common_name: string | null;
           description: string | null;
