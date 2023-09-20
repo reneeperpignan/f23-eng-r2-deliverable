@@ -95,6 +95,7 @@ export default function SpeciesDetailsDialog({ species, onClose, userId, profile
             type="button"
             className="ml-1 mr-1 flex-auto"
             variant="destructive"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleDelete}
             disabled={!isCurrentUser}
           >
