@@ -36,7 +36,7 @@ export interface Database {
           // sort(arg0: (a: any, b: any) => any): any[];
           author: string;
           common_name: string;
-          description: string | null;
+          description: string;
           id: number;
           image: string | null;
           kingdom: Database["public"]["Enums"]["kingdom"];
