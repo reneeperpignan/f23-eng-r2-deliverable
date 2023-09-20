@@ -1,53 +1,35 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 import { type Database } from "@/lib/schema";
 import { useState, type SetStateAction } from "react";
 import SpeciesCard from "./species-card";
-// import React from "react";
 
-// const SortDropdown: React.FC<SortDropdownProps> = () => {
-//   return (
-//     <div>
-//       <label htmlFor="sort">Sort by:</label>
-//       <select id="sort">
-//         <option value="common_name">Common Name</option>
-//         <option value="scientific_name">Scientific Name</option>
-//         {/* Add more sorting options as needed */}
-//       </select>
-//     </div>
-//   );
-// };
-
-// export default SortDropdown;
 type Species = Database["public"]["Tables"]["species"]["Row"];
 type Profiles = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface sortSpeciesProps {
-  species: Species;
-  profiles: Profiles;
+  species: Species[] | null;
   userId: string;
+  profiles: Profiles[] | null;
 }
 
-export default function SortSpecies({ species, profiles, userId }: sortSpeciesProps) {
+export default function SortSpecies({ species, userId, profiles }: sortSpeciesProps) {
   // State to track the selected sorting option
   const [sortOption, setSortOption] = useState("common_name"); // Default sorting by common_name
   const [filterOption, setFilterOption] = useState("none"); // Default sorting by common_name
 
   // Event handler to update the selected sorting option
   const handleSortChange = (event: { target: { value: SetStateAction<string> } }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     setSortOption(event.target.value);
   };
 
   // Event handler to update the selected sorting option
   const handleFilterChange = (event: { target: { value: SetStateAction<string> } }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     setFilterOption(event.target.value);
   };
 
   //sort species based on drop down value
-  let sortedSpecies = [];
-  let filteredSpecies = [];
+  let sortedSpecies: Species[] = [];
+  let filteredSpecies: Species[] = [];
 
   function animalia(species: { kingdom: string }) {
     return species.kingdom === "Animalia";
@@ -74,23 +56,30 @@ export default function SortSpecies({ species, profiles, userId }: sortSpeciesPr
   }
 
   if (sortOption === "common_name") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    sortedSpecies = species ? species.sort((a, b) => a.common_name.localeCompare(b.common_name)) : [];
+    sortedSpecies = species ? species.sort((a: Species, b: Species) => a.common_name.localeCompare(b.common_name)) : [];
+    // sortedSpecies = species
+    //   ? species.sort((a: string , b: string) => {
+    //       const commonNameA = a.common_name || ""; // Use an empty string if common_name is null
+    //       const commonNameB = b.common_name || ""; // Use an empty string if common_name is null
+    //       return commonNameA.localeCompare(commonNameB);
+    //     })
+    //   : [];
   } else if (sortOption === "scientific_name") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    sortedSpecies = species ? species.sort((a, b) => a.scientific_name.localeCompare(b.scientific_name)) : [];
+    sortedSpecies = species
+      ? species.sort((a: Species, b: Species) => a.scientific_name.localeCompare(b.scientific_name))
+      : [];
   } else if (sortOption === "populationasc") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    sortedSpecies = species ? species.sort((a, b) => a.total_population - b.total_population) : [];
+    sortedSpecies = species
+      ? species.sort((a: Species, b: Species) => (a.total_population ?? 0) - (b.total_population ?? 0))
+      : [];
   } else if (sortOption === "populationdec") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    sortedSpecies = species ? species.sort((a, b) => b.total_population - a.total_population) : [];
+    sortedSpecies = species
+      ? species.sort((a: Species, b: Species) => (b.total_population ?? 0) - (a.total_population ?? 0))
+      : [];
   } else if (sortOption === "newest") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    sortedSpecies = species ? species.sort((a, b) => b.id - a.id) : [];
+    sortedSpecies = species ? species.sort((a: Species, b: Species) => b.id - a.id) : [];
   } else if (sortOption === "oldest") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    sortedSpecies = species ? species.sort((a, b) => a.id - b.id) : [];
+    sortedSpecies = species ? species.sort((a: Species, b: Species) => a.id - b.id) : [];
   }
 
   if (filterOption === "none") {
@@ -144,8 +133,7 @@ export default function SortSpecies({ species, profiles, userId }: sortSpeciesPr
 
       <div className="flex flex-wrap justify-center">
         {filteredSpecies.map((species) => (
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          <SpeciesCard key={species.id} species={species} profiles={profiles} userId={userId} />
+          <SpeciesCard key={species.id} species={species} userId={userId} profiles={profiles} />
         ))}
       </div>
     </div>

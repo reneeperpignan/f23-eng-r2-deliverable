@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -17,17 +16,16 @@ import { z } from "zod";
 type Species = Database["public"]["Tables"]["species"]["Row"];
 
 interface EditSpeciesProps {
-  species: Species;
+  species: Species | null;
   onClose: () => void;
 }
 
 const kingdoms = z.enum(["Animalia", "Plantae", "Fungi", "Protista", "Archaea", "Bacteria"]);
 
 const speciesSchema = z.object({
-  common_name: z
-    .string()
-    .nullable()
-    .transform((val) => (val?.trim() === "" ? null : val?.trim())),
+  common_name: z.string(),
+  //   .nullable()
+  //   .transform((val) => (val?.trim() === "" ? null : val?.trim())),
   description: z
     .string()
     .nullable()
@@ -38,7 +36,9 @@ const speciesSchema = z.object({
     .trim()
     .min(1)
     .transform((val) => val?.trim()),
-  total_population: z.number().int().positive().min(1).optional(),
+
+  total_population: z.number().int().positive().min(0).optional(),
+
   image: z
     .string()
     .url()
@@ -55,12 +55,12 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
     resolver: zodResolver(speciesSchema),
     mode: "onChange",
     defaultValues: {
-      common_name: species.common_name ?? "",
-      description: species.description ?? "",
-      kingdom: species.kingdom,
-      scientific_name: species.scientific_name,
-      total_population: species.total_population ?? 0,
-      image: species.image ?? "",
+      common_name: species ? species.common_name ?? "" : "",
+      description: species ? species.description ?? "" : "",
+      kingdom: species ? species.kingdom : "Animalia",
+      scientific_name: species ? species.scientific_name : "",
+      total_population: species ? species.total_population ?? undefined : undefined,
+      image: species ? species.image ?? "" : "",
     },
   });
 
@@ -77,7 +77,7 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
           total_population: input.total_population,
           image: input.image,
         })
-        .eq("id", species.id);
+        .eq("id", species ? species.id : "");
 
       if (error) {
         throw new Error(`Error updating species: ${error.message}`);
@@ -108,9 +108,9 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent className="max-h-screen overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Edit {species.common_name}</DialogTitle>
+          <DialogTitle>Edit {species ? species.common_name : ""}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={(e: BaseSyntheticEvent) => void form.handleSubmit(onSubmit)(e)}>
           <div className="grid w-full items-center gap-4">
             <Form {...form}>
               <form onSubmit={(e: BaseSyntheticEvent) => void form.handleSubmit(onSubmit)(e)}>
@@ -122,7 +122,7 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
                       <FormItem>
                         <FormLabel>Scientific Name</FormLabel>
                         <FormControl>
-                          <Input value={field.value} {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -132,13 +132,11 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
                     control={form.control}
                     name="common_name"
                     render={({ field }) => {
-                      // We must extract value from field and convert a potential defaultValue of `null` to "" because inputs can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
-                      const { value, ...rest } = field;
                       return (
                         <FormItem>
                           <FormLabel>Common Name</FormLabel>
                           <FormControl>
-                            <Input value={field.value} {...rest} />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -185,7 +183,8 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
                           {/* Using shadcn/ui form with number: https://github.com/shadcn-ui/ui/issues/421 */}
                           <Input
                             type="number"
-                            value={field.value}
+                            // value={field.value}
+                            min={0}
                             {...field}
                             onChange={(event) => field.onChange(+event.target.value)}
                           />
@@ -201,7 +200,7 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
                       <FormItem>
                         <FormLabel>Image URL</FormLabel>
                         <FormControl>
-                          <Input value={field.value} {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -213,6 +212,10 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
                     render={({ field }) => {
                       // We must extract value from field and convert a potential defaultValue of `null` to "" because textareas can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
                       const { value, ...rest } = field;
+                      // We must extract value from field and convert a potential defaultValue of `null` to "" because inputs can't handle null values: https://github.com/orgs/react-hook-form/discussions/4091
+                      if (value === null) {
+                        field.value = "";
+                      }
                       return (
                         <FormItem>
                           <FormLabel>Description</FormLabel>
@@ -229,7 +232,7 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
             </Form>
 
             <div className="flex">
-              <Button type="submit" className="ml-1 mr-1 flex-auto" onClick={onSubmit}>
+              <Button type="submit" className="ml-1 mr-1 flex-auto">
                 Update
               </Button>
               <Button type="button" className="ml-1 mr-1 flex-auto" variant="secondary" onClick={onClose}>

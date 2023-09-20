@@ -27,7 +27,7 @@ export default async function SpeciesList() {
         <TypographyH2>Species List</TypographyH2>
         <AddSpeciesDialog key={new Date().getTime()} userId={session.user.id} />
       </div>
-      <SortSpecies species={species} profiles={profiles} userId={session.user.id} />
+      <SortSpecies species={species} userId={session.user.id} profiles={profiles} />
 
       <Separator className="my-4" />
     </>

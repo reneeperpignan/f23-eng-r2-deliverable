@@ -90,11 +90,6 @@ export default function AddSpeciesDialog({ userId }: { userId: string }) {
         variant: "destructive",
       });
     }
-
-    //toast
-    toast({
-      title: "Species Added.",
-    });
     // Reset form values to the data values that have been processed by zod.
     // This way the user sees any changes that have occurred during transformation
     form.reset(input);
