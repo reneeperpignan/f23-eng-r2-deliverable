@@ -217,7 +217,7 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
                         <FormItem>
                           <FormLabel>Description</FormLabel>
                           <FormControl>
-                            <Textarea value={field.value} {...rest} />
+                            <Textarea value={field.value ? field.value : ""} {...rest} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
