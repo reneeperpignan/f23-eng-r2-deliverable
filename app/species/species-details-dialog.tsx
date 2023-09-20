@@ -24,7 +24,6 @@ export default function SpeciesDetailsDialog({ species, onClose, userId, profile
   const isCurrentUser = species ? userId === species.author : false;
 
   //DELETE a species
-
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this species?")) {
       try {

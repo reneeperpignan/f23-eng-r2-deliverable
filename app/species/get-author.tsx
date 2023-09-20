@@ -13,7 +13,7 @@ export default function GetAuthor({ author, profiles }: getAuthorProps) {
     return <span>Unknown Author</span>;
   }
 
-  // Find the author's profile based on the species.author value
+  // Find the author's profile based on the author value
   const authorProfile = profiles.find((profile) => profile.id === author);
   let name = "";
   if (authorProfile?.display_name) {
@@ -26,7 +26,7 @@ export default function GetAuthor({ author, profiles }: getAuthorProps) {
         <p>author: {name ? name : ""}</p>
         <p>author email: {authorProfile.email}</p>
       </div>
-    ); // Display the author's name or relevant information
+    );
   } else {
     return <span>Unknown Author</span>; // Handle the case when the author's profile is not found
   }

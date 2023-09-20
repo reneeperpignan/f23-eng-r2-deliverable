@@ -57,13 +57,6 @@ export default function SortSpecies({ species, userId, profiles }: sortSpeciesPr
 
   if (sortOption === "common_name") {
     sortedSpecies = species ? species.sort((a: Species, b: Species) => a.common_name.localeCompare(b.common_name)) : [];
-    // sortedSpecies = species
-    //   ? species.sort((a: string , b: string) => {
-    //       const commonNameA = a.common_name || ""; // Use an empty string if common_name is null
-    //       const commonNameB = b.common_name || ""; // Use an empty string if common_name is null
-    //       return commonNameA.localeCompare(commonNameB);
-    //     })
-    //   : [];
   } else if (sortOption === "scientific_name") {
     sortedSpecies = species
       ? species.sort((a: Species, b: Species) => a.scientific_name.localeCompare(b.scientific_name))
@@ -109,7 +102,7 @@ export default function SortSpecies({ species, userId, profiles }: sortSpeciesPr
             <option value="common_name">Common Name</option>
             <option value="scientific_name">Scientific Name</option>
             <option value="populationasc">Population (ascending)</option>
-            <option value="populationdec">Population (decending)</option>
+            <option value="populationdec">Population (descending)</option>
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
           </select>

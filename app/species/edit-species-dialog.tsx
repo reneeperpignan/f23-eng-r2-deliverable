@@ -94,11 +94,8 @@ export default function EditSpecies({ species, onClose }: EditSpeciesProps) {
       // Refresh all server components in the current route to display the updated species list after editing.
       router.refresh();
     } catch (error) {
-      // console.error("Error updating species:", error);
       toast({
         title: "Error updating species.",
-        // description: error.message,
-        // variant: "error",
       });
     }
   };
